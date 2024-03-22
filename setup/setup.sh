@@ -19,8 +19,7 @@ echo "alias status='service $NAME status'" >> ~/.bash_profile
 echo "~~~ install basic tools ~~~"
 sudo apt install -y dnsutils vim git tldr python3-pip bat tmux iptables
 
-echo "~~~ install project-specific tools ~~~"
-sudo apt install -y python3-requests python3-flask python3-icecream python3-waitress
+
 echo "~~~ disable password login via ssh ~~~"
 #todo
 
