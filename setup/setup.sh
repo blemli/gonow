@@ -15,10 +15,17 @@ echo "alias follow='journalctl -u $NAME --follow'" >> ~/.bash_profile
 echo "alias errors='journalctl -u $NAME -b -p emerg..err'" >> ~/.bash_profile
 echo "alias update='cd /opt/vrminutes && setup/update.sh'" >> ~/.bash_profile
 echo "alias status='service $NAME status'" >> ~/.bash_profile
+echo "alias disable='sudo service $NAME stop && sudo systemctl disable $NAME'" >> ~/.bash_profile
+echo "alias enable='sudo systemctl enable $NAME && sudo service start $NAME'" >> ~/.bash_profile
+
 
 echo "~~~ install basic tools ~~~"
 sudo apt install -y dnsutils vim git tldr python3-pip bat tmux iptables
 
+echo "~~~install specific dependencies"
+sudo apt install -y npm
+cd /opt/$NAME
+npm install opening_hours
 
 echo "~~~ disable password login via ssh ~~~"
 #todo

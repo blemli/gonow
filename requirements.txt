@@ -1,1 +1,4 @@
 adafruit-circuitpython-neopixel
+requests
+opening-hours-py
+geopy
