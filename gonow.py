@@ -1,19 +1,41 @@
+import logging
+from datetime import datetime
 
 import hours,colors,time
 from led import pixels
 from icecream import ic
+from places import places
+LED_COUNT = 16
+places=places[:LED_COUNT]
 
-places=["282655576","4143672011","4153947940","3913401397"]
 lat=47.49973
 lon=8.72413
 
 while True:
     for i,place in enumerate(places):
-        oh=hours.get_by_id(place,lat,lon)
-        #print(f"{place} => open: {oh.is_open()}, next: {oh.next_change()}")
-        ic(oh)
-        if not oh["is_open"]:
-            pixels[i]=colors.RED.rgb
+        oh=hours.get(place,lat,lon)
+        if oh is None:
+            logging.error(f"{place} doesn't exist or has no hours")
+            pixels[i]=colors.BLACK.rgb
+            continue
+        # calculate minutes from now until next change (closing)
+        if oh.next_change() is None:
+            next_change=datetime.now()
         else:
-            pixels[i]=colors.GREEN.rgb
-    time.sleep(60)
+            next_change=oh.next_change()
+        minutes = (next_change - datetime.now()).seconds / 60
+        if not oh.is_open():
+            if minutes >0 and minutes < 20:
+                print(f"{place} opens soon (in {minutes} min")
+                pixels[i]=colors.PURPLE.rgb
+            else:
+                print(f"{place} is closed")
+                pixels[i]=colors.RED.rgb
+        else:
+            if minutes >0 and minutes < 40:
+                print(f"{place} closes soon (in {minutes} min")
+                pixels[i]=colors.YELLOW.rgb
+            else:
+                print(f"{place} is open")
+                pixels[i]=colors.GREEN.rgb
+    time.sleep(20)
