@@ -13,7 +13,7 @@ _is it still open or not?_![G0075](assets/G0075.svg)
 
 - 18 nice, soft glowing led's
 - turns off at night (bedroom compatible)
-- only public apis used(no credentials needed)
+- only public apis used (no credentials needed)
 - configurable via browser
 
 ## maintain 
