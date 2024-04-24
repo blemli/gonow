@@ -1,16 +1,11 @@
+import logging
 import sys
 import requests
 from icecream import ic
 from opening_hours import OpeningHours
-import oh2
-from geopy.geocoders import Nominatim
-import urllib.parse
-
 
 
 def find_place(lat, lon, search_name, radius=10000):
-    # Properly format search_name for regex matching in Overpass QL
-    search_name = search_name.replace(" ", ".*")  # Use '.*' to match any character including spaces between words
     """
     Find the nearest OSM ID by name from a given latitude and longitude.
 
@@ -20,16 +15,21 @@ def find_place(lat, lon, search_name, radius=10000):
     - radius: Search radius in meters.
     """
     overpass_url = "http://overpass-api.de/api/interpreter"
-
+    #search_name = search_name.replace(" ", ".*")  # Use '.*' to match any character including spaces between words #todo:needed?
     overpass_query = f"""
     [out:json];
     (
-      node["name"~"{search_name}", i]({lat - 0.01},{lon - 0.01},{lat + 0.01},{lon + 0.01});
-      way["name"~"{search_name}", i]({lat - 0.01},{lon - 0.01},{lat + 0.01},{lon + 0.01});
-      relation["name"~"{search_name}", i]({lat - 0.01},{lon - 0.01},{lat + 0.01},{lon + 0.01});
+      node["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
+      node["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09}); #this is hacky but necessary for OBI
+      way["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
+      way["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
+      relation["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
+      relation["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
+
     );
     out center;
     """
+    print(overpass_query)
     response = requests.get(overpass_url, params={'data': overpass_query})
     data = response.json()
 
@@ -38,9 +38,9 @@ def find_place(lat, lon, search_name, radius=10000):
 
     for element in data['elements']:
         # Calculate distance from anchor to element center (simplified calculation)
-        elat = element.get('center', {}).get('lat', element.get('lat'))
-        elon = element.get('center', {}).get('lon', element.get('lon'))
-        distance = ((lat - elat) ** 2 + (lon - elon) ** 2) ** 0.5  # Simplified, not geographically accurate method
+        element_lat = element.get('center', {}).get('lat', element.get('lat'))
+        element_lon = element.get('center', {}).get('lon', element.get('lon'))
+        distance = ((lat - element_lat) ** 2 + (lon - element_lon) ** 2) ** 0.5  # Simplified, not geographically accurate method
 
         if distance < shortest_distance:
             nearest_entity = element
@@ -103,16 +103,24 @@ def check_opening_hours(opening_hours_str, timestamp=datetime.now()):
 
 
 def get(name, lat, lon):
-    place=find_place(lat, lon, name)
-    assert place is not None
-    hours_string=get_hours_string(place)
-    oh=OpeningHours(hours_string)
-    return oh
+    try:
+        place=find_place(lat, lon, name)
+        assert place is not None
+    except:
+        logging.error(f"Could not find {name}")
+        return None
+    try:
+        hours_string=get_hours_string(place)
+        ic(hours_string)
+        oh=OpeningHours(hours_string)
+        return oh
+    except:
+        logging.error(f"Could not get hours for {name}")
+        return None
 
 def get_by_id(id,lat,long):
     hours_string = get_hours_string(id)
     oh=check_opening_hours(hours_string)
-#    oh = OpeningHours(hours_string)
     return oh
 
 
@@ -125,3 +133,4 @@ if __name__ =="__main__":
     oh=get(name, lat, lon)
     ic(oh.state())
     ic(oh.next_change())
+    ic("end")
