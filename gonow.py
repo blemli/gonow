@@ -25,16 +25,19 @@ while True:
             next_change=oh.next_change()
         minutes = (next_change - datetime.now()).seconds / 60
         if not oh.is_open():
-            if minutes >0 and minutes < 20:
+            if minutes >0 and minutes < 15:
                 print(f"{place} opens soon (in {minutes} min")
-                pixels[i]=colors.PURPLE.rgb
+                pixels[i]=colors.YELLOW.rgb
             else:
                 print(f"{place} is closed")
                 pixels[i]=colors.RED.rgb
         else:
-            if minutes >0 and minutes < 40:
-                print(f"{place} closes soon (in {minutes} min")
-                pixels[i]=colors.YELLOW.rgb
+            if minutes >0 and minutes < 20:
+                print(f"{place} closes very soon (in {minutes} min")
+                pixels[i]=colors.PURPLE.rgb
+            elif minutes >= 20 and minutes < 45:
+                print(f"{place} closes soon")
+                pixels[i]=colors.ORANGE.rgb
             else:
                 print(f"{place} is open")
                 pixels[i]=colors.GREEN.rgb
