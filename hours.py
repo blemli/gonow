@@ -3,9 +3,15 @@ import sys
 import requests
 from icecream import ic
 from opening_hours import OpeningHours
+import oh2
+from geopy.geocoders import Nominatim
+import urllib.parse
+
 
 
 def find_place(lat, lon, search_name, radius=10000):
+    # Properly format search_name for regex matching in Overpass QL
+    #search_name = search_name.replace(" ", ".*")  # Use '.*' to match any character including spaces between words
     """
     Find the nearest OSM ID by name from a given latitude and longitude.
 
@@ -15,12 +21,12 @@ def find_place(lat, lon, search_name, radius=10000):
     - radius: Search radius in meters.
     """
     overpass_url = "http://overpass-api.de/api/interpreter"
-    #search_name = search_name.replace(" ", ".*")  # Use '.*' to match any character including spaces between words #todo:needed?
+    #search_name = search_name.replace(" ", ".*")  # Use '.*' to match any character including spaces between words
     overpass_query = f"""
     [out:json];
     (
       node["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
-      node["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09}); #this is hacky but necessary for OBI
+      node["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
       way["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
       way["alt_name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
       relation["name"~"{search_name}", i]({lat - 0.09},{lon - 0.09},{lat + 0.09},{lon + 0.09});
@@ -38,9 +44,9 @@ def find_place(lat, lon, search_name, radius=10000):
 
     for element in data['elements']:
         # Calculate distance from anchor to element center (simplified calculation)
-        element_lat = element.get('center', {}).get('lat', element.get('lat'))
-        element_lon = element.get('center', {}).get('lon', element.get('lon'))
-        distance = ((lat - element_lat) ** 2 + (lon - element_lon) ** 2) ** 0.5  # Simplified, not geographically accurate method
+        elat = element.get('center', {}).get('lat', element.get('lat'))
+        elon = element.get('center', {}).get('lon', element.get('lon'))
+        distance = ((lat - elat) ** 2 + (lon - elon) ** 2) ** 0.5  # Simplified, not geographically accurate method
 
         if distance < shortest_distance:
             nearest_entity = element
@@ -121,6 +127,7 @@ def get(name, lat, lon):
 def get_by_id(id,lat,long):
     hours_string = get_hours_string(id)
     oh=check_opening_hours(hours_string)
+#    oh = OpeningHours(hours_string)
     return oh
 
 
