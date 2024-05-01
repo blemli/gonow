@@ -35,7 +35,7 @@ def find_place(lat, lon, search_name, radius=10000):
     );
     out center;
     """
-    print(overpass_query)
+    #print(overpass_query)
     response = requests.get(overpass_url, params={'data': overpass_query})
     data = response.json()
 
