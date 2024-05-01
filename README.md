@@ -1,4 +1,4 @@
-# gonow
+# offnomat
 _is it still open or not?_![G0075](assets/G0075.svg)
 
 ## use

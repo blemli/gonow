@@ -1,5 +1,5 @@
 [Unit]
-Description=manage gonow configuration
+Description=manage offnomat configuration
 After=network-online.target
 
 [Service]
