@@ -1,7 +1,11 @@
+import atexit
 import logging
 from datetime import datetime
 
 import hours,colors,time
+import led
+import atexit
+
 from led import pixels
 from icecream import ic
 from places import places
@@ -11,6 +15,7 @@ places=places[:LED_COUNT]
 lat=47.49973
 lon=8.72413
 
+atexit.register(led.cleanup)
 while True:
     for i,place in enumerate(places):
         oh=hours.get(place,lat,lon)
