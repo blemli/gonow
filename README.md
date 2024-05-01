@@ -18,11 +18,11 @@ _is it still open or not?_![G0075](assets/G0075.svg)
 
 ## maintain 
 
-connect: `ssh pi@vrminutes.local`  (only key, no password access)
+connect: `ssh pi@offnomat.local`  (only key, no password access)
 
 - `follow`  follows live logs
 - `errors` shows latest errors
-- `sudo service vrminutes start/stop/restart`
+- `sudo service offnomat start/stop/restart`
 - `disable` or  `enable` the service
 
 ## install
