@@ -1,4 +1,4 @@
-NAME="gonow"
+NAME="offnomat"
 DESCRIPTION="is it open or not?"
 
 echo "~~~ make installation stuff executable ~~~"
