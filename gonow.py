@@ -14,6 +14,9 @@ lon=8.72413
 while True:
     for i,place in enumerate(places):
         oh=hours.get(place,lat,lon)
+        if place == "Diethelm":
+            pixels[i]=colors.WHITE.rgb
+            continue
         if oh is None:
             logging.error(f"{place} doesn't exist or has no hours")
             pixels[i]=colors.BLACK.rgb
@@ -27,7 +30,7 @@ while True:
         if not oh.is_open():
             if minutes >0 and minutes < 15:
                 print(f"{place} opens soon (in {minutes} min")
-                pixels[i]=colors.YELLOW.rgb
+                pixels[i]=colors.BLUE.rgb
             else:
                 print(f"{place} is closed")
                 pixels[i]=colors.RED.rgb
