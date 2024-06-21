@@ -7,7 +7,9 @@ import oh2
 from geopy.geocoders import Nominatim
 import urllib.parse
 
+import requests_cache
 
+requests_cache.install_cache('hours_cache', backend='sqlite', expire_after=3600)
 
 def find_place(lat, lon, search_name, radius=10000):
     # Properly format search_name for regex matching in Overpass QL

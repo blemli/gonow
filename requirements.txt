@@ -3,3 +3,4 @@ requests
 opening-hours-py
 geopy
 icecream
+requests-cache
