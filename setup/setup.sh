@@ -66,6 +66,12 @@ sudo mkdir /etc/rsyslog.d
 echo ":programname, isequal, \"$NAME\" stop" | sudo tee -a /etc/rsyslog.d/filter-$NAME.conf
 echo ":programname, isequal, \"$NAME-admin\" stop" | sudo tee -a /etc/rsyslog.d/filter-$NAME-admin.conf
 
+echo "~~~ turn on poe fan only at higher temperatures ~~~"
+echo "# PoE Hat Fan Speeds" | sudo tee -a /boot/config.txt
+echo "dtparam=poe_fan_temp0=60000" | sudo tee -a /boot/config.txt
+echo "dtparam=poe_fan_temp1=70000" | sudo tee -a /boot/config.txt
+echo "dtparam=poe_fan_temp2=80000" | sudo tee -a /boot/config.txt
+echo "dtparam=poe_fan_temp3=90000" | sudo tee -a /boot/config.txt
 
 echo "~~~ install venv ~~~"
 python3 -m venv /opt/$NAME/.venv
