@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Offnomat ⚙️</title>
+<script src="static/node_modules/@json-editor/json-editor/dist/jsoneditor.js"></script>
+  <link rel="stylesheet" id="bootstrap" href="static/node_modules/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="static/water.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+
+<body>
+  <div width="100px" id="editor_holder"></div>
+  <button id="submit" class="btn btn-block btn-primary">Save</button>
+
+  <script>
+    function sendJSON(content) {
+      // Creating a XHR object
+      let xhr = new XMLHttpRequest();
+      let url = "/config/set";
+
+      // open a connection
+      xhr.open("POST", url, true);
+
+      // Set the request header i.e. which type of content you are sending
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      // Create a state change callback
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // Print received data from server
+          //result.innerHTML = this.responseText;//todo: ?
+        }
+      };
+
+      // Converting JSON data to string
+      var data = JSON.stringify(content);
+
+      // Sending data with the request
+      xhr.send(data);
+    }
+    async function loadJSON() {
+      console.log("json");
+      let url = "/config/get";
+      //fetch(url)
+      //.then(response => response.json()).then(json => console.log(json))
+      // .then(json => { console.log(obj); return json });
+      //let response = await fetch(url);
+      //let obj = await response.json();
+      //console.log(obj);
+      //return obj;
+      let obj = await (await fetch(url)).json();
+      return obj;
+    }
+
+    // Initialize the editor with a JSON schema
+    var editor = new JSONEditor(document.getElementById("editor_holder"), {
+      theme: "bootstrap4",
+      iconlib: "fontawesome5",
+      ajax: true,
+      disable_array_delete_all_rows: true,
+      disable_array_delete_last_row: true,
+      disable_edit_json: true,
+      disable_properties: true,
+      disable_array_reorder: true,
+      disable_collapse: true,
+      titleHidden: true,
+      prompt_before_delete: false,
+      required_by_default: true,
+    //object_layout: "grid",
+      schema: {
+        $ref: "/schema.json",
+      },
+    });
+    editor.on('ready', () => {
+      // Now the api methods will be available
+      loadJSON().then((json) => {
+        console.log(json);
+        editor.setValue(json);
+      });
+    });
+
+    editor.on('change', () => {
+      // Validate the editor's current value against the schema
+      const errors = editor.validate();
+
+      if (errors.length) {
+        // errors is an array of objects, each with a `path`, `property`, and `message` parameter
+        // `property` is the schema keyword that triggered the validation error (e.g. "minLength")
+        // `path` is a dot separated path into the JSON object (e.g. "root.path.to.field")
+        console.log(errors);
+        document.getElementById("submit").disabled = true;
+      }
+      else {
+        document.getElementById("submit").disabled = false;
+        // It's valid!
+      }
+
+      // Do something
+    });
+    // Hook up the submit button to send the config back to the webserver
+    document.getElementById("submit").addEventListener("click", function () {
+      sendJSON(editor.getValue());
+    });
+  </script>
+<footer> solved at 2024-06-25 by <a href="https://problem.li">Problemli</a></footer>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+{
+  "title": "Offnomat",
+  "type": "object",
+  "required": [
+    "mode",
+    "places"
+  ],
+  "properties": {
+    "mode": {
+      "type": "string",
+      "description": "the mode of transport you usually use",
+      "enum": [
+        "bike",
+        "pedestrian",
+        "car",
+        "public-transport"
+      ],
+      "default": "bike"
+    },
+    "places": {
+      "type": "array",
+      "format": "table",
+      "title": "Places",
+      "uniqueItems": true,
+      "maxItems": 16,
+      "items": {
+        "type": "object",
+        "title": "Place",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "duration": {
+            "description": "How many minutes you spend on that place at minimum",
+            "type": "integer",
+	    "format":"number",
+            "default": 5,
+            "minimum":0
+          }
+        }
+      }
+    }
+  }
+}

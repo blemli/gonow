@@ -8,7 +8,7 @@ import atexit
 
 from led import pixels
 from icecream import ic
-from places import places
+from config import places
 from light import is_dark
 
 LED_COUNT = 16
@@ -24,6 +24,8 @@ while True:
         logging.info("Disabeling because of Night")
     else:
         for i,place in enumerate(places):
+            place=place["name"]
+            duration=place["duration"]
             oh=hours.get(place,lat,lon)
             if place == "Diethelm":
                 pixels[i]=colors.WHITE.rgb

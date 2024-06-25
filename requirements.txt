@@ -4,3 +4,5 @@ opening-hours-py
 geopy
 icecream
 requests-cache
+waitress
+flask
