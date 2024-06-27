@@ -9,3 +9,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable $name-admin.service
 sudo service $name-admin start
 
+
+echo "~~~ install pip requirements ~~~~"
+pip install -r requirements.txt
+
+
+$old_pwd = $(pwd)
+cd admin/static
+npm i
+cd $old_pwd

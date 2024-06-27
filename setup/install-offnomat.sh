@@ -7,3 +7,6 @@ sudo chmod 644 /lib/systemd/system/$name.service
 sudo systemctl daemon-reload
 sudo systemctl enable $name.service
 sudo service $name start
+
+echo "~~~ install pip requirements ~~~~"
+pip install -r requirements.txt
