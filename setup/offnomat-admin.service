@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Type=simple
 User=pi
-WorkingDirectory=/opt/%H
+WorkingDirectory=/opt/%H/admin
 ExecStart=/opt/%H/.venv/bin/python3 -u /opt/%H/admin/backend.py
 Restart=on-failure
 RestartSec=1
